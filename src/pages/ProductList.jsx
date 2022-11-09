@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { getCategories } from '../services/api';
+import { Link } from 'react-router-dom';
 
 export default class ProductList extends Component {
   state = {
@@ -21,6 +22,9 @@ export default class ProductList extends Component {
     const { isEmpty, categories } = this.state;
     return (
       <div>
+        <Link to="/shopping-cart" data-testid="shopping-cart-button">
+          Carrinho de Compra
+        </Link>
         <input type="text" placeholder="Digite aqui" />
         {isEmpty
           ? (
