@@ -6,6 +6,7 @@ export default class ProductList extends Component {
   state = {
     isEmpty: true,
     categories: [],
+    category: '',
     inputSearch: '',
     products: '',
     isSearched: false,
@@ -19,12 +20,12 @@ export default class ProductList extends Component {
     const { name, value } = target;
     this.setState({
       [name]: value,
-    });
+    }, this.handleProductsExhibition);
   };
 
   handleProductsExhibition = async () => {
-    const { inputSearch } = this.state;
-    const responseAPI = await getProductsFromCategoryAndQuery(null, inputSearch);
+    const { inputSearch, category } = this.state;
+    const responseAPI = await getProductsFromCategoryAndQuery(category, inputSearch);
     this.setState({
       isEmpty: false,
       products: responseAPI.results,
@@ -69,8 +70,10 @@ export default class ProductList extends Component {
             >
               <input
                 type="radio"
-                name="categorias"
+                name="category"
                 id={ id }
+                value={ id }
+                onChange={ this.handleChange }
               />
               { name }
             </label>
@@ -82,7 +85,7 @@ export default class ProductList extends Component {
               Digite algum termo de pesquisa ou escolha uma categoria.
             </p>
           )}
-        {isSearched && ((products.length > 0 && typeof products !== 'string')
+        {isSearched && ((products.length > 0)
           ? (
             products.map(({ id, title, thumbnail, price }) => (
               <div
