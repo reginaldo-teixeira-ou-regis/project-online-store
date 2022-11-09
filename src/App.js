@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-// Começando Projeto
+// Começando Projeto novo
 
 function App() {
   return (
