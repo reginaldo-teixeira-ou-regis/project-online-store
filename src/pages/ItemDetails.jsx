@@ -8,6 +8,7 @@ class ItemDetails extends Component {
     title: '',
     thumbnail: '',
     price: '',
+    id: '',
   };
 
   componentDidMount() {
@@ -23,13 +24,25 @@ class ItemDetails extends Component {
       title,
       thumbnail,
       price,
+      id,
     });
   };
 
+  saveProductLocalStorage = () => {
+    const productSave = this.state;
+    const productLocalStorage = JSON.parse(localStorage.getItem('cartItems'));
+    if (productLocalStorage === null) {
+      localStorage.setItem('cartItems', JSON.stringify([productSave]));
+    } else {
+      const productLocalStorageAdd = [...productLocalStorage, productSave];
+      localStorage.setItem('cartItems', JSON.stringify(productLocalStorageAdd));
+    }
+  };
+
   render() {
-    const { title, thumbnail, price } = this.state;
+    const { title, thumbnail, price, id } = this.state;
     return (
-      <div>
+      <div key={ id }>
         <h2 data-testid="product-detail-name">
           { title }
         </h2>
@@ -39,6 +52,13 @@ class ItemDetails extends Component {
           alt={ title }
         />
         <span data-testid="product-detail-price">{ price }</span>
+        <button
+          data-testid="product-detail-add-to-cart"
+          type="button"
+          onClick={ this.saveProductLocalStorage }
+        >
+          Adicionar ao carrinho
+        </button>
         <Link
           to="/shopping-cart"
           data-testid="shopping-cart-button"
