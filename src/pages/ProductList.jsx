@@ -10,6 +10,9 @@ export default class ProductList extends Component {
     inputSearch: '',
     products: '',
     isSearched: false,
+    cartItems: localStorage.cartItems
+      ? JSON.parse(localStorage.cartItems)
+      : [],
   };
 
   componentDidMount() {
@@ -37,6 +40,16 @@ export default class ProductList extends Component {
     getCategories().then((data) => this.setState({
       categories: data,
     }));
+  };
+
+  saveCartItem = ({ target }) => {
+    const { products, cartItems } = this.state;
+    const getItem = products.find((item) => item.id === target.id);
+    const hadItem = cartItems.some((item) => item.id === getItem.id);
+    if (!hadItem) {
+      cartItems.push(getItem);
+      localStorage.cartItems = JSON.stringify(cartItems);
+    }
   };
 
   render() {
@@ -88,21 +101,31 @@ export default class ProductList extends Component {
         {isSearched && ((products.length > 0)
           ? (
             products.map(({ id, title, thumbnail, price }) => (
-            // Coloquei div de produtos em Link
-              <Link
-                data-testid="product-detail-link"
-                key={ id }
-                to={ `/items/${id}` }
-              >
-                <div
-                  key={ id }
-                  data-testid="product"
+              // Coloquei Link dentro de uma div afim de inserir um botão de adicionar ao carrinho
+              // O atributo Key foi realocado para a div pai pois não há necessidade de mante-lá duplicada
+              // Coloquei div de produtos em Link
+              <div key={ id }>
+                <Link
+                  data-testid="product-detail-link"
+                  to={ `/items/${id}` }
                 >
-                  <h3>{ title }</h3>
-                  <img src={ thumbnail } alt={ title } />
-                  <p>{ price }</p>
-                </div>
-              </Link>
+                  <div
+                    data-testid="product"
+                  >
+                    <h3>{ title }</h3>
+                    <img src={ thumbnail } alt={ title } />
+                    <p>{ price }</p>
+                  </div>
+                </Link>
+                <button
+                  data-testid="product-add-to-cart"
+                  type="button"
+                  id={ id }
+                  onClick={ this.saveCartItem }
+                >
+                  Adicionar ao carrinho
+                </button>
+              </div>
             ))
           )
           : (
