@@ -16,11 +16,11 @@ export default class ProductList extends Component {
     this.loadCategories();
   }
 
-  handleChange = ({ target }) => {
+  handleChange = ({ target }, callback = () => {}) => {
     const { name, value } = target;
     this.setState({
       [name]: value,
-    }, this.handleProductsExhibition);
+    }, callback);
   };
 
   handleProductsExhibition = async () => {
@@ -73,7 +73,9 @@ export default class ProductList extends Component {
                 name="category"
                 id={ id }
                 value={ id }
-                onChange={ this.handleChange }
+                onChange={ (event) => (
+                  this.handleChange(event, this.handleProductsExhibition)
+                ) }
               />
               { name }
             </label>
