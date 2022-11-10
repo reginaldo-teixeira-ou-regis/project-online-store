@@ -8,6 +8,7 @@ class ItemDetails extends Component {
     title: '',
     thumbnail: '',
     price: '',
+    id: '',
     message: '',
     email: '',
     rate: '',
@@ -87,7 +88,19 @@ class ItemDetails extends Component {
       title,
       thumbnail,
       price,
+      id,
     });
+  };
+
+  saveProductLocalStorage = () => {
+    const productSave = this.state;
+    const productLocalStorage = JSON.parse(localStorage.getItem('cartItems'));
+    if (productLocalStorage === null) {
+      localStorage.setItem('cartItems', JSON.stringify([productSave]));
+    } else {
+      const productLocalStorageAdd = [...productLocalStorage, productSave];
+      localStorage.setItem('cartItems', JSON.stringify(productLocalStorageAdd));
+    }
   };
 
   render() {
@@ -103,10 +116,10 @@ class ItemDetails extends Component {
         isInvalid,
         rateChecked,
         reviews,
-      },
-    } = this;
+        id,
+      } } = this;
     return (
-      <div>
+      <div key={ id }>
         <div>
           <h2 data-testid="product-detail-name">
             { title }
@@ -117,6 +130,13 @@ class ItemDetails extends Component {
             alt={ title }
           />
           <span data-testid="product-detail-price">{ price }</span>
+          <button
+            data-testid="product-detail-add-to-cart"
+            type="button"
+            onClick={ this.saveProductLocalStorage }
+          >
+            Adicionar ao carrinho
+          </button>
           <Link
             to="/shopping-cart"
             data-testid="shopping-cart-button"
