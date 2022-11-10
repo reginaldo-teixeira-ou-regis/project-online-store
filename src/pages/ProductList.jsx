@@ -88,14 +88,21 @@ export default class ProductList extends Component {
         {isSearched && ((products.length > 0)
           ? (
             products.map(({ id, title, thumbnail, price }) => (
-              <div
+            // Coloquei div de produtos em Link
+              <Link
+                data-testid="product-detail-link"
                 key={ id }
-                data-testid="product"
+                to={ `/items/${id}` }
               >
-                <h3>{ title }</h3>
-                <img src={ thumbnail } alt={ title } />
-                <p>{ price }</p>
-              </div>
+                <div
+                  key={ id }
+                  data-testid="product"
+                >
+                  <h3>{ title }</h3>
+                  <img src={ thumbnail } alt={ title } />
+                  <p>{ price }</p>
+                </div>
+              </Link>
             ))
           )
           : (
