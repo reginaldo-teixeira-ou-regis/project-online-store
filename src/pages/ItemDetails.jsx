@@ -19,6 +19,7 @@ class ItemDetails extends Component {
       { id: 5, checked: false }],
     isInvalid: false,
     reviews: [],
+    freeShipping: false,
   };
 
   componentDidMount() {
@@ -83,12 +84,14 @@ class ItemDetails extends Component {
   handleItemsDetails = async () => {
     const { match: { params: { id } } } = this.props;
     const responseAPI = await getProductById(id);
-    const { title, thumbnail, price } = responseAPI;
+    const { title, thumbnail, price,
+      shipping: { free_shipping: freeShipping } } = responseAPI;
     this.setState({
       title,
       thumbnail,
       price,
       id,
+      freeShipping,
     });
   };
 
@@ -117,6 +120,7 @@ class ItemDetails extends Component {
         rateChecked,
         reviews,
         id,
+        freeShipping,
       } } = this;
     return (
       <div key={ id }>
@@ -130,6 +134,7 @@ class ItemDetails extends Component {
             alt={ title }
           />
           <span data-testid="product-detail-price">{ price }</span>
+          { freeShipping && <span>Frete grátis</span> }
           <button
             data-testid="product-detail-add-to-cart"
             type="button"

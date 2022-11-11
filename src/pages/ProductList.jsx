@@ -102,9 +102,15 @@ export default class ProductList extends Component {
           )}
         {isSearched && ((products.length > 0)
           ? (
-            products.map(({ id, title, thumbnail, price }) => (
+            products.map(({
+              id,
+              title,
+              thumbnail,
+              price,
+              shipping: { free_shipping: freeShipping },
+            }) => (
               // Coloquei Link dentro de uma div afim de inserir um botão de adicionar ao carrinho
-              // O atributo Key foi realocado para a div pai pois não há necessidade de mante-lá duplicada
+              // O atributo Key foi realocado para a div pai pois não há necessidade de mantê-lá duplicada
               // Coloquei div de produtos em Link
               <div key={ id }>
                 <Link
@@ -117,6 +123,7 @@ export default class ProductList extends Component {
                     <h3>{ title }</h3>
                     <img src={ thumbnail } alt={ title } />
                     <p>{ price }</p>
+                    { freeShipping && <p data-testid="free-shipping">Frete gratis</p> }
                   </div>
                 </Link>
                 <button
