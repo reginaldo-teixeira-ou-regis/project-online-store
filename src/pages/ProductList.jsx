@@ -49,16 +49,27 @@ export default class ProductList extends Component {
     if (!hadItem) {
       cartItems.push(getItem);
       localStorage.cartItems = JSON.stringify(cartItems);
+      this.setState({ cartItems });
     }
   };
 
   render() {
-    const { isEmpty, categories, products, isSearched, inputSearch } = this.state;
+    const {
+      isEmpty,
+      categories,
+      products,
+      isSearched,
+      inputSearch,
+      cartItems,
+    } = this.state;
     return (
       <div>
         <Link to="/shopping-cart" data-testid="shopping-cart-button">
           Carrinho de Compra
         </Link>
+        <p data-testid="shopping-cart-size">
+          {cartItems.length}
+        </p>
         <input
           data-testid="query-input"
           name="inputSearch"

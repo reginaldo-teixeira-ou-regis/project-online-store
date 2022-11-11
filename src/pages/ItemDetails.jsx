@@ -20,18 +20,34 @@ class ItemDetails extends Component {
     isInvalid: false,
     reviews: [],
     freeShipping: false,
+    cartQuantity: 0,
   };
 
   componentDidMount() {
     const { match: { params: { id } } } = this.props;
     const reviews = JSON.parse(localStorage.getItem(id));
     this.handleItemsDetails();
+    this.countCartItems();
     if (reviews) {
       this.setState({
         reviews,
       });
     }
   }
+
+  countCartItems = () => {
+    const cartItems = localStorage.cartItems
+      ? JSON.parse(localStorage.cartItems)
+      : [];
+    let countQuantity = 0;
+    cartItems.forEach((item) => {
+      if (!item.quantity) {
+        item.quantity = 1;
+      }
+      countQuantity += item.quantity;
+    });
+    this.setState({ cartQuantity: countQuantity });
+  };
 
   handleChange = ({ target }) => {
     const { name, value } = target;
@@ -98,11 +114,16 @@ class ItemDetails extends Component {
   saveProductLocalStorage = () => {
     const productSave = this.state;
     const productLocalStorage = JSON.parse(localStorage.getItem('cartItems'));
-    if (productLocalStorage === null) {
-      localStorage.setItem('cartItems', JSON.stringify([productSave]));
-    } else {
-      const productLocalStorageAdd = [...productLocalStorage, productSave];
-      localStorage.setItem('cartItems', JSON.stringify(productLocalStorageAdd));
+    const hadItem = productLocalStorage
+      && productLocalStorage.some((item) => item.id === productSave.id);
+    if (!hadItem) {
+      if (productLocalStorage === null) {
+        localStorage.setItem('cartItems', JSON.stringify([productSave]));
+      } else {
+        const productLocalStorageAdd = [...productLocalStorage, productSave];
+        localStorage.setItem('cartItems', JSON.stringify(productLocalStorageAdd));
+      }
+      this.countCartItems();
     }
   };
 
@@ -121,9 +142,19 @@ class ItemDetails extends Component {
         reviews,
         id,
         freeShipping,
+        cartQuantity,
       } } = this;
     return (
       <div key={ id }>
+        <Link
+          to="/shopping-cart"
+          data-testid="shopping-cart-button"
+        >
+          Carrinho de Compras
+        </Link>
+        <p data-testid="shopping-cart-size">
+          { cartQuantity + 2 }
+        </p>
         <div>
           <h2 data-testid="product-detail-name">
             { title }
@@ -142,12 +173,7 @@ class ItemDetails extends Component {
           >
             Adicionar ao carrinho
           </button>
-          <Link
-            to="/shopping-cart"
-            data-testid="shopping-cart-button"
-          >
-            Carrinho de Compras
-          </Link>
+
         </div>
         <div>
           <form>
