@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 class ShoppingCart extends Component {
   state = {
@@ -130,6 +131,15 @@ class ShoppingCart extends Component {
                 ))
             )
         }
+        <Link to="/checkout">
+          <button
+            disabled={ isEmpty }
+            data-testid="checkout-products"
+            type="button"
+          >
+            Finalizar pedido
+          </button>
+        </Link>
       </div>
     );
   }
