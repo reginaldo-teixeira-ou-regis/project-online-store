@@ -15,7 +15,11 @@ export default class Checkout extends Component {
   };
 
   componentDidMount() {
+    const { history } = this.props;
     const checkoutRecovered = JSON.parse(localStorage.getItem('cartItems'));
+    if (!checkoutRecovered) {
+      history.push('/');
+    }
     this.setState({
       checkoutItems: checkoutRecovered,
     });
