@@ -10,6 +10,7 @@ export default class ProductList extends Component {
     inputSearch: '',
     products: '',
     isSearched: false,
+    totalItems: 0,
     cartItems: localStorage.cartItems
       ? JSON.parse(localStorage.cartItems)
       : [],
@@ -17,6 +18,7 @@ export default class ProductList extends Component {
 
   componentDidMount() {
     this.loadCategories();
+    this.countCartItems();
   }
 
   handleChange = ({ target }, callback = () => {}) => {
@@ -47,10 +49,28 @@ export default class ProductList extends Component {
     const getItem = products.find((item) => item.id === target.id);
     const hadItem = cartItems.some((item) => item.id === getItem.id);
     if (!hadItem) {
+      getItem.quantity = 1;
       cartItems.push(getItem);
       localStorage.cartItems = JSON.stringify(cartItems);
       this.setState({ cartItems });
+    } else {
+      cartItems.forEach((item) => {
+        if (item.id === target.id && item.quantity < item.available_quantity) {
+          item.quantity += 1;
+        }
+      });
+      localStorage.cartItems = JSON.stringify(cartItems);
+      this.setState({ cartItems });
     }
+    this.countCartItems();
+  };
+
+  countCartItems = () => {
+    const { cartItems } = this.state;
+    const totalItems = cartItems
+      .reduce((total, { quantity }) => total + quantity, 0) ?? 0;
+    this.setState({ totalItems });
+    localStorage.totalItems = totalItems;
   };
 
   render() {
@@ -60,7 +80,7 @@ export default class ProductList extends Component {
       products,
       isSearched,
       inputSearch,
-      cartItems,
+      totalItems,
     } = this.state;
     return (
       <div>
@@ -68,7 +88,7 @@ export default class ProductList extends Component {
           Carrinho de Compra
         </Link>
         <p data-testid="shopping-cart-size">
-          {cartItems.length}
+          {totalItems}
         </p>
         <input
           data-testid="query-input"

@@ -13,10 +13,9 @@ class ShoppingCart extends Component {
   getLocalStorage = () => {
     const cartItemRecovered = JSON.parse(localStorage.getItem('cartItems'));
     if (cartItemRecovered) {
-      const cartItemRemap = cartItemRecovered.map((item) => ({ ...item, quantity: 1 }));
       this.setState({
         isEmpty: false,
-        cartItems: cartItemRemap,
+        cartItems: cartItemRecovered,
       });
     }
   };
@@ -33,6 +32,7 @@ class ShoppingCart extends Component {
     this.setState({
       cartItems: cart,
     });
+    localStorage.cartItems = JSON.stringify(cart);
   }; */
 
   handleIncrease = ({ target: { name } }) => {
@@ -46,6 +46,7 @@ class ShoppingCart extends Component {
     this.setState({
       cartItems: cart,
     });
+    localStorage.cartItems = JSON.stringify(cart);
   };
 
   handleDecrease = ({ target: { name } }) => {
@@ -59,6 +60,7 @@ class ShoppingCart extends Component {
     this.setState({
       cartItems: cart,
     });
+    localStorage.cartItems = JSON.stringify(cart);
   };
 
   handleDelete = ({ target: { name } }) => {
@@ -67,6 +69,7 @@ class ShoppingCart extends Component {
     this.setState({
       cartItems: cart,
     });
+    localStorage.cartItems = JSON.stringify(cart);
   };
 
   render() {

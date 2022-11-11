@@ -5,13 +5,11 @@ import { getProductById } from '../services/api';
 
 class ItemDetails extends Component {
   state = {
-    title: '',
-    thumbnail: '',
-    price: '',
     id: '',
     message: '',
     email: '',
     rate: '',
+    product: {},
     rateChecked: [{ id: 1, checked: false },
       { id: 2, checked: false },
       { id: 3, checked: false },
@@ -19,8 +17,10 @@ class ItemDetails extends Component {
       { id: 5, checked: false }],
     isInvalid: false,
     reviews: [],
-    freeShipping: false,
-    cartQuantity: 0,
+    cartItems: localStorage.cartItems
+      ? JSON.parse(localStorage.cartItems)
+      : [],
+    totalItems: 0,
   };
 
   componentDidMount() {
@@ -35,18 +35,13 @@ class ItemDetails extends Component {
     }
   }
 
-  countCartItems = () => {
-    const cartItems = localStorage.cartItems
-      ? JSON.parse(localStorage.cartItems)
-      : [];
-    let countQuantity = 0;
-    cartItems.forEach((item) => {
-      if (!item.quantity) {
-        item.quantity = 1;
-      }
-      countQuantity += item.quantity;
+  // Chamada do resultado da API
+  handleItemsDetails = async () => {
+    const { match: { params: { id } } } = this.props;
+    const responseAPI = await getProductById(id);
+    this.setState({
+      product: responseAPI,
     });
-    this.setState({ cartQuantity: countQuantity });
   };
 
   handleChange = ({ target }) => {
@@ -96,35 +91,32 @@ class ItemDetails extends Component {
     }
   };
 
-  // Chamada do resultado da API
-  handleItemsDetails = async () => {
-    const { match: { params: { id } } } = this.props;
-    const responseAPI = await getProductById(id);
-    const { title, thumbnail, price,
-      shipping: { free_shipping: freeShipping } } = responseAPI;
-    this.setState({
-      title,
-      thumbnail,
-      price,
-      id,
-      freeShipping,
-    });
+  saveProductLocalStorage = () => {
+    const { product, cartItems } = this.state;
+    const hadItem = cartItems.some((item) => item.id === product.id);
+    if (!hadItem) {
+      product.quantity = 1;
+      cartItems.push(product);
+      localStorage.cartItems = JSON.stringify(cartItems);
+      this.setState({ cartItems });
+    } else {
+      cartItems.forEach((item) => {
+        if (item.id === product.id && item.quantity < item.available_quantity) {
+          item.quantity += 1;
+        }
+      });
+      localStorage.cartItems = JSON.stringify(cartItems);
+      this.setState({ cartItems });
+    }
+    this.countCartItems();
   };
 
-  saveProductLocalStorage = () => {
-    const productSave = this.state;
-    const productLocalStorage = JSON.parse(localStorage.getItem('cartItems'));
-    const hadItem = productLocalStorage
-      && productLocalStorage.some((item) => item.id === productSave.id);
-    if (!hadItem) {
-      if (productLocalStorage === null) {
-        localStorage.setItem('cartItems', JSON.stringify([productSave]));
-      } else {
-        const productLocalStorageAdd = [...productLocalStorage, productSave];
-        localStorage.setItem('cartItems', JSON.stringify(productLocalStorageAdd));
-      }
-      this.countCartItems();
-    }
+  countCartItems = () => {
+    const { cartItems } = this.state;
+    const totalItems = cartItems
+      .reduce((total, { quantity }) => total + quantity, 0) ?? 0;
+    this.setState({ totalItems });
+    localStorage.totalItems = totalItems;
   };
 
   render() {
@@ -132,17 +124,19 @@ class ItemDetails extends Component {
       handleChange,
       onClickSubmitButton,
       state: {
-        title,
-        thumbnail,
-        price,
+        product: {
+          title,
+          thumbnail,
+          price,
+          freeShipping,
+        },
         email,
         message,
         isInvalid,
         rateChecked,
         reviews,
         id,
-        freeShipping,
-        cartQuantity,
+        totalItems,
       } } = this;
     return (
       <div key={ id }>
@@ -153,7 +147,7 @@ class ItemDetails extends Component {
           Carrinho de Compras
         </Link>
         <p data-testid="shopping-cart-size">
-          { cartQuantity + 2 }
+          { totalItems }
         </p>
         <div>
           <h2 data-testid="product-detail-name">
