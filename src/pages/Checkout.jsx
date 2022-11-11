@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 export default class Checkout extends Component {
