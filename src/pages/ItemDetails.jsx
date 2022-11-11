@@ -5,13 +5,11 @@ import { getProductById } from '../services/api';
 
 class ItemDetails extends Component {
   state = {
-    title: '',
-    thumbnail: '',
-    price: '',
     id: '',
     message: '',
     email: '',
     rate: '',
+    product: {},
     rateChecked: [{ id: 1, checked: false },
       { id: 2, checked: false },
       { id: 3, checked: false },
@@ -19,19 +17,32 @@ class ItemDetails extends Component {
       { id: 5, checked: false }],
     isInvalid: false,
     reviews: [],
-    freeShipping: false,
+    cartItems: localStorage.cartItems
+      ? JSON.parse(localStorage.cartItems)
+      : [],
+    totalItems: 0,
   };
 
   componentDidMount() {
     const { match: { params: { id } } } = this.props;
     const reviews = JSON.parse(localStorage.getItem(id));
     this.handleItemsDetails();
+    this.countCartItems();
     if (reviews) {
       this.setState({
         reviews,
       });
     }
   }
+
+  // Chamada do resultado da API
+  handleItemsDetails = async () => {
+    const { match: { params: { id } } } = this.props;
+    const responseAPI = await getProductById(id);
+    this.setState({
+      product: responseAPI,
+    });
+  };
 
   handleChange = ({ target }) => {
     const { name, value } = target;
@@ -80,30 +91,32 @@ class ItemDetails extends Component {
     }
   };
 
-  // Chamada do resultado da API
-  handleItemsDetails = async () => {
-    const { match: { params: { id } } } = this.props;
-    const responseAPI = await getProductById(id);
-    const { title, thumbnail, price,
-      shipping: { free_shipping: freeShipping } } = responseAPI;
-    this.setState({
-      title,
-      thumbnail,
-      price,
-      id,
-      freeShipping,
-    });
+  saveProductLocalStorage = () => {
+    const { product, cartItems } = this.state;
+    const hadItem = cartItems.some((item) => item.id === product.id);
+    if (!hadItem) {
+      product.quantity = 1;
+      cartItems.push(product);
+      localStorage.cartItems = JSON.stringify(cartItems);
+      this.setState({ cartItems });
+    } else {
+      cartItems.forEach((item) => {
+        if (item.id === product.id && item.quantity < item.available_quantity) {
+          item.quantity += 1;
+        }
+      });
+      localStorage.cartItems = JSON.stringify(cartItems);
+      this.setState({ cartItems });
+    }
+    this.countCartItems();
   };
 
-  saveProductLocalStorage = () => {
-    const productSave = this.state;
-    const productLocalStorage = JSON.parse(localStorage.getItem('cartItems'));
-    if (productLocalStorage === null) {
-      localStorage.setItem('cartItems', JSON.stringify([productSave]));
-    } else {
-      const productLocalStorageAdd = [...productLocalStorage, productSave];
-      localStorage.setItem('cartItems', JSON.stringify(productLocalStorageAdd));
-    }
+  countCartItems = () => {
+    const { cartItems } = this.state;
+    const totalItems = cartItems
+      .reduce((total, { quantity }) => total + quantity, 0) ?? 0;
+    this.setState({ totalItems });
+    localStorage.totalItems = totalItems;
   };
 
   render() {
@@ -111,19 +124,31 @@ class ItemDetails extends Component {
       handleChange,
       onClickSubmitButton,
       state: {
-        title,
-        thumbnail,
-        price,
+        product: {
+          title,
+          thumbnail,
+          price,
+          freeShipping,
+        },
         email,
         message,
         isInvalid,
         rateChecked,
         reviews,
         id,
-        freeShipping,
+        totalItems,
       } } = this;
     return (
       <div key={ id }>
+        <Link
+          to="/shopping-cart"
+          data-testid="shopping-cart-button"
+        >
+          Carrinho de Compras
+        </Link>
+        <p data-testid="shopping-cart-size">
+          { totalItems }
+        </p>
         <div>
           <h2 data-testid="product-detail-name">
             { title }
@@ -142,12 +167,7 @@ class ItemDetails extends Component {
           >
             Adicionar ao carrinho
           </button>
-          <Link
-            to="/shopping-cart"
-            data-testid="shopping-cart-button"
-          >
-            Carrinho de Compras
-          </Link>
+
         </div>
         <div>
           <form>
