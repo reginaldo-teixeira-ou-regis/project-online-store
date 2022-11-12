@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { getProductById } from '../services/api';
+import Header from '../Components/Header';
 
 class ItemDetails extends Component {
   state = {
@@ -140,15 +140,12 @@ class ItemDetails extends Component {
       } } = this;
     return (
       <div key={ id }>
-        <Link
-          to="/shopping-cart"
-          data-testid="shopping-cart-button"
-        >
-          Carrinho de Compras
-        </Link>
-        <p data-testid="shopping-cart-size">
-          { totalItems }
-        </p>
+        <Header
+          totalItems={ totalItems }
+          inputSearch={ inputSearch }
+          handleChange={ this.handleChange }
+          handleProductsExhibition={ this.handleProductsExhibition }
+        />
         <div>
           <h2 data-testid="product-detail-name">
             { title }

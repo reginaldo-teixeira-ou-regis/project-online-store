@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import Header from '../Components/Header';
 import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
 
 export default class ProductList extends Component {
@@ -84,27 +85,12 @@ export default class ProductList extends Component {
     } = this.state;
     return (
       <div>
-        <Link to="/shopping-cart" data-testid="shopping-cart-button">
-          Carrinho de Compra
-        </Link>
-        <p data-testid="shopping-cart-size">
-          {totalItems}
-        </p>
-        <input
-          data-testid="query-input"
-          name="inputSearch"
-          value={ inputSearch }
-          type="text"
-          onChange={ this.handleChange }
-          placeholder="Digite aqui"
+        <Header
+          totalItems={ totalItems }
+          inputSearch={ inputSearch }
+          handleChange={ this.handleChange }
+          handleProductsExhibition={ this.handleProductsExhibition }
         />
-        <button
-          data-testid="query-button"
-          type="button"
-          onClick={ this.handleProductsExhibition }
-        >
-          Salvar
-        </button>
         {
           categories.map(({ id, name }) => (
             <label
