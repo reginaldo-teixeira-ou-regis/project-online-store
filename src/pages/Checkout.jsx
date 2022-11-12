@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Header from '../Components/Header';
 
 export default class Checkout extends Component {
   state = {
@@ -12,6 +13,9 @@ export default class Checkout extends Component {
     address: '',
     payment: '',
     hasError: false,
+    totalItems: localStorage.totalItems
+      ? JSON.parse(localStorage.totalItems)
+      : 0,
   };
 
   componentDidMount() {
@@ -50,9 +54,15 @@ export default class Checkout extends Component {
 
   render() {
     const { checkoutItems, fullName, email,
-      cpf, phone, cep, address, hasError } = this.state;
+      cpf, phone, cep, address, hasError, totalItems } = this.state;
     return (
       <div>
+        <Header // A pesquisa não funciona por não ter as funções e não ser uma pagina preparada para isso
+          totalItems={ totalItems }
+          // inputSearch={ inputSearch }
+          // handleChange={ this.handleChange }
+          // handleProductsExhibition={ this.handleProductsExhibition }
+        />
         {
           checkoutItems.map(({ title, price, id, thumbnail }) => (
             <div key={ id }>

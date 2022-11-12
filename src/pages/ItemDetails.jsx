@@ -140,11 +140,11 @@ class ItemDetails extends Component {
       } } = this;
     return (
       <div key={ id }>
-        <Header
+        <Header // A pesquisa não funciona por não ter as funções e não ser uma pagina preparada para isso
           totalItems={ totalItems }
-          inputSearch={ inputSearch }
-          handleChange={ this.handleChange }
-          handleProductsExhibition={ this.handleProductsExhibition }
+          // inputSearch={ inputSearch }
+          // handleChange={ this.handleChange }
+          // handleProductsExhibition={ this.handleProductsExhibition }
         />
         <div>
           <h2 data-testid="product-detail-name">

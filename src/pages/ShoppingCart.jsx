@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import Header from '../Components/Header';
 
 class ShoppingCart extends Component {
   state = {
     isEmpty: true,
     cartItems: [],
+    totalItems: localStorage.totalItems
+      ? JSON.parse(localStorage.totalItems)
+      : 0,
   };
 
   componentDidMount() {
@@ -74,9 +78,15 @@ class ShoppingCart extends Component {
   };
 
   render() {
-    const { isEmpty, cartItems } = this.state;
+    const { isEmpty, cartItems, totalItems } = this.state;
     return (
       <div>
+        <Header // A pesquisa não funciona por não ter as funções e não ser uma pagina preparada para isso
+          totalItems={ totalItems }
+          // inputSearch={ inputSearch }
+          // handleChange={ this.handleChange }
+          // handleProductsExhibition={ this.handleProductsExhibition }
+        />
         {
           isEmpty ? (
             <h1 data-testid="shopping-cart-empty-message">
@@ -89,6 +99,12 @@ class ShoppingCart extends Component {
                   /* available_quantity: availableQuantity, */
                 }) => (
                   <div key={ id }>
+                    <Header // A pesquisa não funciona por não ter as funções e não ser uma pagina preparada para isso
+                      totalItems={ totalItems }
+                      // inputSearch={ inputSearch }
+                      // handleChange={ this.handleChange }
+                      // handleProductsExhibition={ this.handleProductsExhibition }
+                    />
                     <h3 data-testid="shopping-cart-product-name">{title}</h3>
                     <img
                       src={ thumbnail }
