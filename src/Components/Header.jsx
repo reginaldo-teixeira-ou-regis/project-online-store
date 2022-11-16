@@ -1,6 +1,12 @@
+import { Search, ShoppingCart } from '@mui/icons-material';
+import { Box, InputAdornment, IconButton, ThemeProvider, Badge } from '@mui/material';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import logo from '../customStyle/images/logo.png';
+import { CustomInput } from '../customStyle/CustomHeader';
+import '../index.css';
+import Theme from '../customStyle/Theme';
 
 export default class Header extends Component {
   render() {
@@ -12,38 +18,51 @@ export default class Header extends Component {
     } = this.props;
 
     return (
-      <div>
-        <div>
-          <Link to="/">
-            <img src="https://i.pinimg.com/736x/13/bc/a1/13bca1e8629eb3de7e4b5cd5fc18d87b.jpg" width="100px" alt="logo" />
-          </Link>
-        </div>
-        <div>
-          <input
-            data-testid="query-input"
-            name="inputSearch"
-            value={ inputSearch }
-            type="text"
-            onChange={ handleChange }
-            placeholder="Digite aqui"
-          />
-          <button
-            data-testid="query-button"
-            type="button"
-            onClick={ handleProductsExhibition }
-          >
-            Pesquisar
-          </button>
-        </div>
-        <div>
-          <Link to="/shopping-cart" data-testid="shopping-cart-button">
-            Carrinho de Compra
-            <p data-testid="shopping-cart-size">
-              {totalItems}
-            </p>
-          </Link>
-        </div>
-      </div>
+      <ThemeProvider
+        theme={ Theme }
+      >
+        <Box className="Header">
+          <div>
+            <Link to="/">
+              <img src={ logo } alt="logo" />
+            </Link>
+          </div>
+          <div className="header-input">
+            <CustomInput
+              data-testid="query-input"
+              name="inputSearch"
+              type="text"
+              onChange={ handleChange }
+              placeholder="Digite o que você busca"
+              id="input-with-icon-adornment"
+              value={ inputSearch }
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    data-testid="query-button"
+                    onClick={ handleProductsExhibition }
+                  >
+                    <Search
+                      color="primary"
+                    />
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+          </div>
+          <div className="shopping-cart-icon">
+            <Link to="/shopping-cart" data-testid="shopping-cart-button">
+              <Badge
+                data-testid="shopping-cart-size"
+                badgeContent={ totalItems }
+                color="cinza"
+              >
+                <ShoppingCart sx={ { fontSize: '35px' } } color="branco" />
+              </Badge>
+            </Link>
+          </div>
+        </Box>
+      </ThemeProvider>
     );
   }
 }
