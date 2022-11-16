@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 code {
@@ -12,4 +13,45 @@ code {
     monospace;
 }
 
-/* commit */
+.Header {
+  width: 100vw;
+  height: 100px;
+  display: flex;
+  gap: 50px;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #284B63;
+  padding: 0 30px;
+}
+
+.header-input {
+  display: flex;
+  flex-grow: 3;
+  justify-content: center;
+  align-content: center;
+}
+
+.shopping-cart-icon {
+  padding-right: 70px;
+  justify-content: center;
+}
+
+.shopping-cart-icon a {
+  text-decoration: none;
+}
+
+.shopping-cart-icon p {
+  display: flex;
+  position: relative;
+  top: -22px;
+  left: 20px;
+  background-color: #2FC18C;
+  border-radius: 50% 50%;
+  width: 25px;
+  height: 25px;
+  color: white;
+  border: none;
+  align-items: center;
+  justify-content: center;
+}
