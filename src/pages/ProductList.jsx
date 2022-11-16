@@ -1,6 +1,6 @@
 import { arrayOf, bool, func, shape } from 'prop-types';
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import ListItemCard from '../Components/ListItemCard';
 import { getCategories } from '../services/api';
 
 export default class ProductList extends Component {
@@ -45,6 +45,7 @@ export default class ProductList extends Component {
 
   render() {
     const {
+      saveCartItem,
       props: {
         isEmpty,
         products,
@@ -87,36 +88,12 @@ export default class ProductList extends Component {
           )}
         {isSearched && ((products.length > 0)
           ? (
-            products.map(({
-              id,
-              title,
-              thumbnail,
-              price,
-              shipping: { free_shipping: freeShipping },
-            }) => (
-              <div key={ id }>
-                <Link
-                  data-testid="product-detail-link"
-                  to={ `/items/${id}` }
-                >
-                  <div
-                    data-testid="product"
-                  >
-                    <h3>{ title }</h3>
-                    <img src={ thumbnail } alt={ title } />
-                    <p>{ price }</p>
-                    { freeShipping && <p data-testid="free-shipping">Frete gratis</p> }
-                  </div>
-                </Link>
-                <button
-                  data-testid="product-add-to-cart"
-                  type="button"
-                  id={ id }
-                  onClick={ this.saveCartItem }
-                >
-                  Adicionar ao carrinho
-                </button>
-              </div>
+            products.map((product) => (
+              <ListItemCard
+                saveCartItem={ saveCartItem }
+                product={ product }
+                key={ product.id }
+              />
             ))
           )
           : (
