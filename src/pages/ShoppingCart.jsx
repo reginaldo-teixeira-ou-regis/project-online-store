@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import CartItemCard from '../Components/CartItemCard';
 
 class ShoppingCart extends Component {
   state = {
-    isEmpty: true,
     cartItems: [],
   };
 
@@ -15,7 +15,6 @@ class ShoppingCart extends Component {
     const cartItemRecovered = JSON.parse(localStorage.getItem('cartItems'));
     if (cartItemRecovered) {
       this.setState({
-        isEmpty: false,
         cartItems: cartItemRecovered,
       });
     }
@@ -74,69 +73,31 @@ class ShoppingCart extends Component {
   };
 
   render() {
-    const { isEmpty, cartItems } = this.state;
+    const { handleIncrease, handleDecrease, handleDelete,
+      state: { cartItems } } = this;
     return (
       <div>
         {
-          isEmpty ? (
+          !cartItems.length ? (
             <h1 data-testid="shopping-cart-empty-message">
               Seu carrinho está vazio
             </h1>)
             : (
               cartItems
-                .map(({
-                  title, price, id, thumbnail, quantity,
-                  /* available_quantity: availableQuantity, */
-                }) => (
-                  <div key={ id }>
-                    <h3 data-testid="shopping-cart-product-name">{title}</h3>
-                    <img
-                      src={ thumbnail }
-                      alt={ title }
-                    />
-                    <p>{price}</p>
-                    <button
-                      name={ id }
-                      type="button"
-                      data-testid="remove-product"
-                      onClick={ this.handleDelete }
-                    >
-                      x
-                    </button>
-                    <button
-                      name={ id }
-                      type="button"
-                      data-testid="product-decrease-quantity"
-                      onClick={ this.handleDecrease }
-                      /* disabled={ quantity > 0 } */
-                    >
-                      -
-                    </button>
-                    {/* <input
-                      type="number"
-                      name={ id }
-                      data-testid="shopping-cart-product-quantity"
-                      min="1"
-                      max={ availableQuantity }
-                      value={ quantity }
-                      onChange={ this.handleChangeInput }
-                    /> */}
-                    <span data-testid="shopping-cart-product-quantity">{quantity}</span>
-                    <button
-                      name={ id }
-                      type="button"
-                      data-testid="product-increase-quantity"
-                      onClick={ this.handleIncrease }
-                    >
-                      +
-                    </button>
-                  </div>
+                .map((item) => (
+                  <CartItemCard
+                    key={ item.id }
+                    product={ item }
+                    handleIncrease={ handleIncrease }
+                    handleDecrease={ handleDecrease }
+                    handleDelete={ handleDelete }
+                  />
                 ))
             )
         }
         <Link to="/checkout">
           <button
-            disabled={ isEmpty }
+            disabled={ !cartItems.length }
             data-testid="checkout-products"
             type="button"
           >
