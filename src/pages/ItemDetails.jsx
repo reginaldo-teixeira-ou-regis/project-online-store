@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { func, shape, string } from 'prop-types';
 import { getProductById } from '../services/api';
+import DetailsReview from '../Components/DetailsReview';
 
 class ItemDetails extends Component {
   state = {
@@ -150,45 +151,14 @@ class ItemDetails extends Component {
 
         </div>
         <div>
-          <form>
-            <input
-              data-testid="product-detail-email"
-              type="email"
-              placeholder="Email"
-              name="email"
-              onChange={ handleChange }
-              value={ email }
-            />
-            { rateChecked.map(({ checked }, index) => (
-              <label key={ `${index + 1}-rating` } htmlFor={ index + 1 }>
-                <input
-                  data-testid={ `${index + 1}-rating` }
-                  type="radio"
-                  name="rate"
-                  id={ index + 1 }
-                  value={ index + 1 }
-                  checked={ checked }
-                  onChange={ handleChange }
-                />
-                { index + 1 }
-              </label>
-            )) }
-            <textarea
-              data-testid="product-detail-evaluation"
-              placeholder="Mensagem (opcional)"
-              onChange={ handleChange }
-              name="message"
-              value={ message }
-            />
-            <button
-              data-testid="submit-review-btn"
-              type="button"
-              onClick={ onClickSubmitButton }
-            >
-              Avaliar
-            </button>
-            { isInvalid && <span data-testid="error-msg">Campos inválidos</span> }
-          </form>
+          <DetailsReview
+            handleChange={ handleChange }
+            onClickSubmitButton={ onClickSubmitButton }
+            email={ email }
+            message={ message }
+            isInvalid={ isInvalid }
+            rateChecked={ rateChecked }
+          />
           <div>
             { reviews
               .map(({ email: emailReview, rating, text }, index) => (
