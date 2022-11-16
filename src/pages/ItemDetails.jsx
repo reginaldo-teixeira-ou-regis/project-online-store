@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { func, shape, string } from 'prop-types';
 import { getProductById } from '../services/api';
-import Header from '../Components/Header';
 
 class ItemDetails extends Component {
   state = {
@@ -20,14 +19,12 @@ class ItemDetails extends Component {
     cartItems: localStorage.cartItems
       ? JSON.parse(localStorage.cartItems)
       : [],
-    totalItems: 0,
   };
 
   componentDidMount() {
     const { match: { params: { id } } } = this.props;
     const reviews = JSON.parse(localStorage.getItem(id));
     this.handleItemsDetails();
-    this.countCartItems();
     if (reviews) {
       this.setState({
         reviews,
@@ -93,6 +90,7 @@ class ItemDetails extends Component {
 
   saveProductLocalStorage = () => {
     const { product, cartItems } = this.state;
+    const { countCart } = this.props;
     const hadItem = cartItems.some((item) => item.id === product.id);
     if (!hadItem) {
       product.quantity = 1;
@@ -108,15 +106,7 @@ class ItemDetails extends Component {
       localStorage.cartItems = JSON.stringify(cartItems);
       this.setState({ cartItems });
     }
-    this.countCartItems();
-  };
-
-  countCartItems = () => {
-    const { cartItems } = this.state;
-    const totalItems = cartItems
-      .reduce((total, { quantity }) => total + quantity, 0) ?? 0;
-    this.setState({ totalItems });
-    localStorage.totalItems = totalItems;
+    countCart();
   };
 
   render() {
@@ -136,16 +126,9 @@ class ItemDetails extends Component {
         rateChecked,
         reviews,
         id,
-        totalItems,
       } } = this;
     return (
       <div key={ id }>
-        <Header // A pesquisa não funciona por não ter as funções e não ser uma pagina preparada para isso
-          totalItems={ totalItems }
-          // inputSearch={ inputSearch }
-          // handleChange={ this.handleChange }
-          // handleProductsExhibition={ this.handleProductsExhibition }
-        />
         <div>
           <h2 data-testid="product-detail-name">
             { title }
@@ -225,11 +208,12 @@ class ItemDetails extends Component {
 }
 
 ItemDetails.propTypes = {
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string,
+  match: shape({
+    params: shape({
+      id: string,
     }),
   }).isRequired,
+  countCart: func.isRequired,
 };
 
 export default ItemDetails;

@@ -1,17 +1,13 @@
+import { func } from 'prop-types';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import Header from '../Components/Header';
-import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
+import { getCategories } from '../services/api';
 
 export default class ProductList extends Component {
   state = {
     isEmpty: true,
     categories: [],
-    category: '',
-    inputSearch: '',
-    products: '',
     isSearched: false,
-    totalItems: 0,
     cartItems: localStorage.cartItems
       ? JSON.parse(localStorage.cartItems)
       : [],
@@ -19,25 +15,7 @@ export default class ProductList extends Component {
 
   componentDidMount() {
     this.loadCategories();
-    this.countCartItems();
   }
-
-  handleChange = ({ target }, callback = () => {}) => {
-    const { name, value } = target;
-    this.setState({
-      [name]: value,
-    }, callback);
-  };
-
-  handleProductsExhibition = async () => {
-    const { inputSearch, category } = this.state;
-    const responseAPI = await getProductsFromCategoryAndQuery(category, inputSearch);
-    this.setState({
-      isEmpty: false,
-      products: responseAPI.results,
-      isSearched: true,
-    });
-  };
 
   loadCategories = () => {
     getCategories().then((data) => this.setState({
@@ -47,6 +25,7 @@ export default class ProductList extends Component {
 
   saveCartItem = ({ target }) => {
     const { products, cartItems } = this.state;
+    const { countCart } = this.props;
     const getItem = products.find((item) => item.id === target.id);
     const hadItem = cartItems.some((item) => item.id === getItem.id);
     if (!hadItem) {
@@ -63,15 +42,7 @@ export default class ProductList extends Component {
       localStorage.cartItems = JSON.stringify(cartItems);
       this.setState({ cartItems });
     }
-    this.countCartItems();
-  };
-
-  countCartItems = () => {
-    const { cartItems } = this.state;
-    const totalItems = cartItems
-      .reduce((total, { quantity }) => total + quantity, 0) ?? 0;
-    this.setState({ totalItems });
-    localStorage.totalItems = totalItems;
+    countCart();
   };
 
   render() {
@@ -80,17 +51,12 @@ export default class ProductList extends Component {
       categories,
       products,
       isSearched,
-      inputSearch,
-      totalItems,
     } = this.state;
+
+    const { handleChange } = this.props;
+
     return (
       <div>
-        <Header
-          totalItems={ totalItems }
-          inputSearch={ inputSearch }
-          handleChange={ this.handleChange }
-          handleProductsExhibition={ this.handleProductsExhibition }
-        />
         {
           categories.map(({ id, name }) => (
             <label
@@ -104,7 +70,7 @@ export default class ProductList extends Component {
                 id={ id }
                 value={ id }
                 onChange={ (event) => (
-                  this.handleChange(event, this.handleProductsExhibition)
+                  handleChange(event, this.handleProductsExhibition)
                 ) }
               />
               { name }
@@ -126,9 +92,6 @@ export default class ProductList extends Component {
               price,
               shipping: { free_shipping: freeShipping },
             }) => (
-              // Coloquei Link dentro de uma div afim de inserir um botão de adicionar ao carrinho
-              // O atributo Key foi realocado para a div pai pois não há necessidade de mantê-lá duplicada
-              // Coloquei div de produtos em Link
               <div key={ id }>
                 <Link
                   data-testid="product-detail-link"
@@ -163,3 +126,8 @@ export default class ProductList extends Component {
     );
   }
 }
+
+ProductList.propTypes = {
+  handleChange: func.isRequired,
+  countCart: func.isRequired,
+};
