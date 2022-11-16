@@ -10,7 +10,6 @@ import { getProductsFromCategoryAndQuery } from './services/api';
 export default class App extends Component {
   state = {
     totalItems: 0,
-    cartItems: [],
     category: '',
     inputSearch: '',
     isEmpty: true,
@@ -29,23 +28,13 @@ export default class App extends Component {
     }, callback);
   };
 
-  getCartItems = () => {
-    const cartItems = JSON.parse(localStorage.getItem('cartItems'));
-    this.setState({
-      cartItems: cartItems ?? [],
-    });
-  };
-
   countCartItems = () => {
-    this.getCartItems();
-    setTimeout(() => {
-      const { cartItems } = this.state;
-      const totalItems = cartItems
-        .reduce((total, { quantity }) => total + quantity, 0) ?? 0;
+    const cartItems = JSON.parse(localStorage.getItem('cartItems')) ?? [];
+    const totalItems = cartItems
+      .reduce((total, { quantity }) => total + quantity, 0) ?? 0;
 
-      this.setState({ totalItems });
-      localStorage.totalItems = totalItems;
-    }, 100);
+    this.setState({ totalItems });
+    localStorage.totalItems = totalItems;
   };
 
   handleProductsExhibition = () => {
