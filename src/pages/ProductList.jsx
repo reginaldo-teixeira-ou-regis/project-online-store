@@ -1,4 +1,4 @@
-import { bool, func, string } from 'prop-types';
+import { arrayOf, bool, func, shape } from 'prop-types';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { getCategories } from '../services/api';
@@ -22,8 +22,8 @@ export default class ProductList extends Component {
   };
 
   saveCartItem = ({ target }) => {
-    const { products, cartItems } = this.state;
-    const { countCart } = this.props;
+    const { cartItems } = this.state;
+    const { countCart, products } = this.props;
     const getItem = products.find((item) => item.id === target.id);
     const hadItem = cartItems.some((item) => item.id === getItem.id);
     if (!hadItem) {
@@ -50,6 +50,7 @@ export default class ProductList extends Component {
         products,
         isSearched,
         handleChange,
+        handleProductsExhibition,
       },
       state: {
         categories,
@@ -71,7 +72,7 @@ export default class ProductList extends Component {
                 id={ id }
                 value={ id }
                 onChange={ (event) => (
-                  handleChange(event, this.handleProductsExhibition)
+                  handleChange(event, handleProductsExhibition)
                 ) }
               />
               { name }
@@ -132,6 +133,7 @@ ProductList.propTypes = {
   handleChange: func.isRequired,
   countCart: func.isRequired,
   isEmpty: bool.isRequired,
-  products: string.isRequired,
+  products: arrayOf(shape({})).isRequired,
   isSearched: bool.isRequired,
+  handleProductsExhibition: func.isRequired,
 };

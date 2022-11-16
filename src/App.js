@@ -48,16 +48,16 @@ export default class App extends Component {
     }, 100);
   };
 
-  handleProductsExhibition = async () => {
+  handleProductsExhibition = () => {
     const { inputSearch, category } = this.state;
-    console.log('Categoria:', category);
-    console.log('InputSearch:', inputSearch);
-    const responseAPI = await getProductsFromCategoryAndQuery(category, inputSearch);
-    this.setState({
-      isEmpty: false,
-      products: responseAPI.results,
-      isSearched: true,
-    });
+    getProductsFromCategoryAndQuery(category, inputSearch)
+      .then((data) => {
+        this.setState({
+          isEmpty: false,
+          products: data.results,
+          isSearched: true,
+        });
+      });
   };
 
   render() {
@@ -95,6 +95,7 @@ export default class App extends Component {
                 isEmpty={ isEmpty }
                 products={ products }
                 isSearched={ isSearched }
+                handleProductsExhibition={ handleProductsExhibition }
               />) }
           />
           <Route exact path="/shopping-cart" component={ ShoppingCart } />
