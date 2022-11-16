@@ -1,5 +1,6 @@
 import { arrayOf, bool, func, shape } from 'prop-types';
 import React, { Component } from 'react';
+import CategoryRadio from '../Components/CategoryRadio';
 import ListItemCard from '../Components/ListItemCard';
 import { getCategories } from '../services/api';
 
@@ -62,22 +63,13 @@ export default class ProductList extends Component {
       <div>
         {
           categories.map(({ id, name }) => (
-            <label
-              htmlFor={ id }
+            <CategoryRadio
+              handleChange={ handleChange }
+              handleProductsExhibition={ handleProductsExhibition }
+              name={ name }
+              id={ id }
               key={ id }
-              data-testid="category"
-            >
-              <input
-                type="radio"
-                name="category"
-                id={ id }
-                value={ id }
-                onChange={ (event) => (
-                  handleChange(event, handleProductsExhibition)
-                ) }
-              />
-              { name }
-            </label>
+            />
           ))
         }
         {isEmpty

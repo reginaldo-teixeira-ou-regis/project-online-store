@@ -1,4 +1,4 @@
-import { number, shape, string } from 'prop-types';
+import { bool, func, number, shape, string } from 'prop-types';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -15,7 +15,7 @@ export default class ListItemCard extends Component {
       },
     } = this.props;
     return (
-      <div key={ id }>
+      <div>
         <Link
           data-testid="product-detail-link"
           to={ `/items/${id}` }
@@ -48,7 +48,7 @@ ListItemCard.propTypes = {
     title: string,
     thumbnail: string,
     price: number,
-    shipping: shape({ free_shipping: string }),
+    shipping: shape({ free_shipping: bool }),
   }).isRequired,
   saveCartItem: func.isRequired,
 };
