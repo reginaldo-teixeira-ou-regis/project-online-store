@@ -5,19 +5,17 @@ import Checkout from './pages/Checkout';
 import ItemDetails from './pages/ItemDetails';
 import ProductList from './pages/ProductList';
 import ShoppingCart from './pages/ShoppingCart';
-// import { getProductsFromCategoryAndQuery } from './services/api';
+import { getProductsFromCategoryAndQuery } from './services/api';
 
 export default class App extends Component {
   state = {
     totalItems: 0,
     cartItems: [],
-    productList: {
-      category: '',
-      inputSearch: '',
-      isEmpty: true,
-      products: [],
-      isSearched: false,
-    },
+    category: '',
+    inputSearch: '',
+    isEmpty: true,
+    products: [],
+    isSearched: false,
   };
 
   componentDidMount() {
@@ -50,29 +48,30 @@ export default class App extends Component {
     }, 100);
   };
 
-  // handleProductsExhibition = async () => {
-  //   const { state: { inputSearch, category } } = this;
-  //   const responseAPI = await getProductsFromCategoryAndQuery(category, inputSearch);
-  //   this.setState({
-  //     isEmpty: false,
-  //     products: responseAPI.results,
-  //     isSearched: true,
-  //   });
-  // };
+  handleProductsExhibition = async () => {
+    const { inputSearch, category } = this.state;
+    console.log('Categoria:', category);
+    console.log('InputSearch:', inputSearch);
+    const responseAPI = await getProductsFromCategoryAndQuery(category, inputSearch);
+    this.setState({
+      isEmpty: false,
+      products: responseAPI.results,
+      isSearched: true,
+    });
+  };
 
   render() {
     const {
       handleChange,
       countCartItems,
+      handleProductsExhibition,
       state: {
         totalItems,
-        productList: {
-          // category,
-          inputSearch,
-          // isEmpty,
-          // products,
-          // isSearched,
-        },
+        inputSearch,
+        category,
+        isEmpty,
+        products,
+        isSearched,
       } } = this;
     return (
       <div className="App">
@@ -80,7 +79,7 @@ export default class App extends Component {
           totalItems={ totalItems }
           inputSearch={ inputSearch }
           handleChange={ handleChange }
-          handleProductsExhibition={ this.handleProductsExhibition }
+          handleProductsExhibition={ handleProductsExhibition }
         />
         <Switch>
           <Route
@@ -92,6 +91,10 @@ export default class App extends Component {
                 totalItems={ totalItems }
                 countCart={ countCartItems }
                 handleChange={ handleChange }
+                category={ category }
+                isEmpty={ isEmpty }
+                products={ products }
+                isSearched={ isSearched }
               />) }
           />
           <Route exact path="/shopping-cart" component={ ShoppingCart } />

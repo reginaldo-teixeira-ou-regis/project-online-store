@@ -1,13 +1,11 @@
-import { func } from 'prop-types';
+import { bool, func, string } from 'prop-types';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { getCategories } from '../services/api';
 
 export default class ProductList extends Component {
   state = {
-    isEmpty: true,
     categories: [],
-    isSearched: false,
     cartItems: localStorage.cartItems
       ? JSON.parse(localStorage.cartItems)
       : [],
@@ -47,13 +45,16 @@ export default class ProductList extends Component {
 
   render() {
     const {
-      isEmpty,
-      categories,
-      products,
-      isSearched,
-    } = this.state;
-
-    const { handleChange } = this.props;
+      props: {
+        isEmpty,
+        products,
+        isSearched,
+        handleChange,
+      },
+      state: {
+        categories,
+      },
+    } = this;
 
     return (
       <div>
@@ -130,4 +131,7 @@ export default class ProductList extends Component {
 ProductList.propTypes = {
   handleChange: func.isRequired,
   countCart: func.isRequired,
+  isEmpty: bool.isRequired,
+  products: string.isRequired,
+  isSearched: bool.isRequired,
 };
