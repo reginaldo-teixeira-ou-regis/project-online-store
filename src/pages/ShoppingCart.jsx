@@ -1,3 +1,4 @@
+import { func } from 'prop-types';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -37,7 +38,7 @@ class ShoppingCart extends Component {
   }; */
 
   handleIncrease = ({ target: { name } }) => {
-    const { cartItems } = this.state;
+    const { props: { countCart }, state: { cartItems } } = this;
     const cart = cartItems.map((item) => {
       if (item.id === name && item.quantity < item.available_quantity) {
         item.quantity += 1;
@@ -48,10 +49,11 @@ class ShoppingCart extends Component {
       cartItems: cart,
     });
     localStorage.cartItems = JSON.stringify(cart);
+    countCart();
   };
 
   handleDecrease = ({ target: { name } }) => {
-    const { cartItems } = this.state;
+    const { props: { countCart }, state: { cartItems } } = this;
     const cart = cartItems.map((item) => {
       if (item.id === name && item.quantity > 1) {
         item.quantity -= 1;
@@ -62,15 +64,17 @@ class ShoppingCart extends Component {
       cartItems: cart,
     });
     localStorage.cartItems = JSON.stringify(cart);
+    countCart();
   };
 
   handleDelete = ({ target: { name } }) => {
-    const { cartItems } = this.state;
+    const { props: { countCart }, state: { cartItems } } = this;
     const cart = cartItems.filter((item) => item.id !== name);
     this.setState({
       cartItems: cart,
     });
     localStorage.cartItems = JSON.stringify(cart);
+    countCart();
   };
 
   render() {
@@ -147,5 +151,9 @@ class ShoppingCart extends Component {
     );
   }
 }
+
+ShoppingCart.propTypes = {
+  countCart: func.isRequired,
+};
 
 export default ShoppingCart;

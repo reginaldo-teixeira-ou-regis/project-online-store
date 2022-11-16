@@ -98,7 +98,16 @@ export default class App extends Component {
                 handleProductsExhibition={ handleProductsExhibition }
               />) }
           />
-          <Route exact path="/shopping-cart" component={ ShoppingCart } />
+          <Route
+            exact
+            path="/shopping-cart"
+            render={ (props) => (
+              <ShoppingCart
+                { ...props }
+                countCart={ countCartItems }
+              />
+            ) }
+          />
           <Route
             exact
             path="/items/:id"
@@ -110,7 +119,15 @@ export default class App extends Component {
               />
             ) }
           />
-          <Route exact path="/checkout" component={ Checkout } />
+          <Route
+            exact
+            path="/checkout"
+            render={ (props) => (
+              <Checkout
+                { ...props }
+              />
+            ) }
+          />
         </Switch>
       </div>
     );
