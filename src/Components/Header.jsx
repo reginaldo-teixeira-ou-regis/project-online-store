@@ -5,7 +5,6 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../customStyle/images/logo.png';
 import { CustomInput } from '../customStyle/CustomHeader';
-import '../index.css';
 import Theme from '../customStyle/Theme';
 
 export default class Header extends Component {
