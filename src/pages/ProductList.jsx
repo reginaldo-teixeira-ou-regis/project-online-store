@@ -60,39 +60,43 @@ export default class ProductList extends Component {
     } = this;
 
     return (
-      <div>
-        {
-          categories.map(({ id, name }) => (
-            <CategoryRadio
-              handleChange={ handleChange }
-              handleProductsExhibition={ handleProductsExhibition }
-              name={ name }
-              id={ id }
-              key={ id }
-            />
-          ))
-        }
-        {isEmpty
-          && (
-            <p data-testid="home-initial-message">
-              Digite algum termo de pesquisa ou escolha uma categoria.
-            </p>
-          )}
-        {isSearched && ((products.length > 0)
-          ? (
-            products.map((product) => (
-              <ListItemCard
-                saveCartItem={ saveCartItem }
-                product={ product }
-                key={ product.id }
+      <div className="container">
+        <div className="container-categories">
+          {
+            categories.map(({ id, name }) => (
+              <CategoryRadio
+                handleChange={ handleChange }
+                handleProductsExhibition={ handleProductsExhibition }
+                name={ name }
+                id={ id }
+                key={ id }
               />
             ))
-          )
-          : (
-            <p>
-              Nenhum produto foi encontrado
-            </p>
-          ))}
+          }
+        </div>
+        <div className="container-main">
+          {isEmpty
+            && (
+              <p data-testid="home-initial-message" className="mensagem-inicial">
+                Digite algum termo de pesquisa ou escolha uma categoria.
+              </p>
+            )}
+          {isSearched && ((products.length > 0)
+            ? (
+              products.map((product) => (
+                <ListItemCard
+                  saveCartItem={ saveCartItem }
+                  product={ product }
+                  key={ product.id }
+                />
+              ))
+            )
+            : (
+              <p className="mensagem-inicial">
+                Nenhum produto foi encontrado
+              </p>
+            ))}
+        </div>
       </div>
     );
   }

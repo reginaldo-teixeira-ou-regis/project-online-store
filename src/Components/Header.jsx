@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../customStyle/images/logo.png';
 import { CustomInput } from '../customStyle/CustomHeader';
+import '../index.css';
 import Theme from '../customStyle/Theme';
 
 export default class Header extends Component {
@@ -49,17 +50,19 @@ export default class Header extends Component {
               }
             />
           </div>
-          <div className="shopping-cart-icon">
-            <Link to="/shopping-cart" data-testid="shopping-cart-button">
-              <Badge
-                data-testid="shopping-cart-size"
-                badgeContent={ totalItems }
-                color="cinza"
-              >
-                <ShoppingCart sx={ { fontSize: '35px' } } color="branco" />
-              </Badge>
-            </Link>
-          </div>
+          <Link
+            className="shopping-cart-icon"
+            to="/shopping-cart"
+            data-testid="shopping-cart-button"
+          >
+            <Badge
+              data-testid="shopping-cart-size"
+              badgeContent={ totalItems }
+              color="cinza"
+            >
+              <ShoppingCart sx={ { fontSize: '35px' } } color="branco" />
+            </Badge>
+          </Link>
         </Box>
       </ThemeProvider>
     );
